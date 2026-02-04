@@ -26,6 +26,38 @@ export default function LoginPage() {
         }
     };
 
+    const getRoleDisplay = (r: string) => {
+        switch (r) {
+            case 'admin': return 'Admin';
+            case 'doctor': return 'Doctor';
+            case 'patient': return 'Patient';
+            default: return r.charAt(0).toUpperCase() + r.slice(1);
+        }
+    };
+
+    const getRoleBadge = () => {
+        switch (role) {
+            case 'admin':
+                return {
+                    class: 'bg-red-500/20 text-red-400 border border-red-500/30',
+                    icon: '👑 Admin'
+                };
+            case 'doctor':
+                return {
+                    class: 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
+                    icon: '🩺 Doctor'
+                };
+            case 'patient':
+            default:
+                return {
+                    class: 'bg-sky-500/20 text-sky-400 border border-sky-500/30',
+                    icon: '👤 Patient'
+                };
+        }
+    };
+
+    const badge = getRoleBadge();
+
     return (
         <div className="min-h-screen flex items-center justify-center p-4">
             <div className="w-full max-w-md animate-fadeIn">
@@ -47,20 +79,28 @@ export default function LoginPage() {
                     <h2 className="text-xl font-semibold text-center mb-6">Welcome Back</h2>
 
                     {/* Role Selector */}
-                    <div className="flex gap-2 mb-6 p-1 bg-slate-800/50 rounded-xl">
+                    <div className="flex gap-2 mb-4 p-1 bg-slate-800/50 rounded-xl">
                         {(['patient', 'doctor', 'admin'] as const).map((r) => (
                             <button
                                 key={r}
                                 type="button"
                                 onClick={() => setRole(r)}
                                 className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${role === r
-                                        ? 'bg-gradient-to-r from-sky-500 to-violet-500 text-white shadow-lg'
-                                        : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+                                    ? 'bg-gradient-to-r from-sky-500 to-violet-500 text-white shadow-lg'
+                                    : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
                                     }`}
                             >
-                                {r.charAt(0).toUpperCase() + r.slice(1)}
+                                {getRoleDisplay(r)}
                             </button>
                         ))}
+                    </div>
+
+                    {/* Selected Role Badge */}
+                    <div className="flex items-center justify-center gap-2 mb-6 p-3 rounded-lg bg-gradient-to-r from-sky-500/10 to-violet-500/10 border border-sky-500/20">
+                        <span className="text-slate-400 text-sm">Signing in as:</span>
+                        <span className={`px-3 py-1 rounded-full text-sm font-semibold ${badge.class}`}>
+                            {badge.icon}
+                        </span>
                     </div>
 
                     {error && (

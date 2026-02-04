@@ -63,13 +63,21 @@ export default function RegisterPage() {
                         </svg>
                     </div>
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-sky-400 to-violet-400 bg-clip-text text-transparent">
-                        Create Account
+                        Patient Registration
                     </h1>
-                    <p className="text-slate-400 mt-2">Join Doctor Files as a Patient</p>
+                    <p className="text-slate-400 mt-2">Create your patient account</p>
                 </div>
 
                 {/* Register Card */}
                 <div className="glass-card p-8">
+                    {/* Role Badge */}
+                    <div className="flex items-center justify-center gap-2 mb-6 p-3 rounded-lg bg-gradient-to-r from-sky-500/10 to-violet-500/10 border border-sky-500/20">
+                        <span className="text-slate-400 text-sm">Registering as:</span>
+                        <span className="px-3 py-1 rounded-full text-sm font-semibold bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                            👤 Patient
+                        </span>
+                    </div>
+
                     {error && (
                         <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
                             {error}
@@ -111,7 +119,7 @@ export default function RegisterPage() {
                                 value={formData.phone}
                                 onChange={handleChange}
                                 className="input-field"
-                                placeholder="+1-555-1234"
+                                placeholder="+91-9876543210"
                                 required
                             />
                         </div>
@@ -179,6 +187,14 @@ export default function RegisterPage() {
                         <Link href="/login" className="text-sky-400 hover:text-sky-300 font-medium">
                             Sign in here
                         </Link>
+                    </p>
+                </div>
+
+                {/* Info note */}
+                <div className="mt-6 p-4 glass-card text-sm">
+                    <p className="text-slate-400 font-medium">💡 Note</p>
+                    <p className="text-slate-500 mt-1">
+                        Doctor and Admin accounts are created by the system administrator.
                     </p>
                 </div>
             </div>

@@ -72,7 +72,7 @@ const DoctorSchema = new Schema<IDoctor>({
     }
 });
 
-// Index for specialization lookups (email index created by unique: true)
+// Index for specialization lookups
 DoctorSchema.index({ specialization: 1 });
 
 // Prevent returning password hash in JSON

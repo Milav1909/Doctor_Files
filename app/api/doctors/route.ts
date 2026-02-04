@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
         const limit = parseInt(searchParams.get('limit') || '10');
         const skip = (page - 1) * limit;
 
-        // Build query
+        // Build query - all doctors are verified (created by dev after verification)
         const query: Record<string, unknown> = {};
 
         if (specialization) {

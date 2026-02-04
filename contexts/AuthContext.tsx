@@ -63,15 +63,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             throw new Error(data.error || 'Login failed');
         }
 
+        const userWithRole = { ...data.user, role };
         setToken(data.token);
-        setUser({ ...data.user, role });
+        setUser(userWithRole);
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify({ ...data.user, role }));
+        localStorage.setItem('user', JSON.stringify(userWithRole));
 
         // Redirect based on role
         router.push(`/${role}`);
     };
 
+    // Only patients can self-register
     const register = async (registerData: RegisterData) => {
         const response = await fetch('/api/auth/patient/register', {
             method: 'POST',
@@ -85,10 +87,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             throw new Error(data.error || 'Registration failed');
         }
 
+        const userWithRole = { ...data.user, role: 'patient' as const };
         setToken(data.token);
-        setUser({ ...data.user, role: 'patient' });
+        setUser(userWithRole);
         localStorage.setItem('token', data.token);
-        localStorage.setItem('user', JSON.stringify({ ...data.user, role: 'patient' }));
+        localStorage.setItem('user', JSON.stringify(userWithRole));
 
         router.push('/patient');
     };
