@@ -29,9 +29,7 @@ export default function BookAppointmentPage() {
         reason: ''
     });
 
-    useEffect(() => {
-        loadDoctor();
-    }, [id]);
+    useEffect(() => { loadDoctor(); }, [id]);
 
     const loadDoctor = async () => {
         try {
@@ -49,16 +47,10 @@ export default function BookAppointmentPage() {
         e.preventDefault();
         setError('');
         setSubmitting(true);
-
         try {
             await fetchWithAuth('/api/appointments', {
                 method: 'POST',
-                body: JSON.stringify({
-                    doctorId: id,
-                    date: formData.date,
-                    time: formData.time,
-                    reason: formData.reason
-                })
+                body: JSON.stringify({ doctorId: id, date: formData.date, time: formData.time, reason: formData.reason })
             });
             setSuccess(true);
             setTimeout(() => router.push('/patient/appointments'), 2000);
@@ -69,50 +61,35 @@ export default function BookAppointmentPage() {
         }
     };
 
-    const getDayName = (day: number) => {
-        return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][day];
-    };
+    const getDayName = (day: number) => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][day];
 
     const generateTimeSlots = () => {
         const slots = [];
         for (let hour = 9; hour <= 17; hour++) {
             for (const min of ['00', '30']) {
                 if (hour === 17 && min === '30') continue;
-                const time = `${hour.toString().padStart(2, '0')}:${min}`;
-                slots.push(time);
+                slots.push(`${hour.toString().padStart(2, '0')}:${min}`);
             }
         }
         return slots;
     };
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center h-64">
-                <div className="spinner" />
-            </div>
-        );
-    }
+    if (loading) return <div className="flex items-center justify-center h-64"><div className="spinner" /></div>;
 
-    if (!doctor) {
-        return (
-            <div className="glass-card p-12 text-center">
-                <p className="text-red-400">Doctor not found</p>
-            </div>
-        );
-    }
+    if (!doctor) return <div className="glass-card p-12 text-center"><p className="text-red-500">Doctor not found</p></div>;
 
     if (success) {
         return (
             <div className="max-w-xl mx-auto animate-fadeIn">
                 <div className="glass-card p-12 text-center">
-                    <div className="w-20 h-20 rounded-full bg-emerald-500/20 flex items-center justify-center mx-auto mb-6">
-                        <svg className="w-10 h-10 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mx-auto mb-4">
+                        <svg className="w-8 h-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                     </div>
-                    <h2 className="text-2xl font-bold text-white mb-2">Appointment Requested!</h2>
-                    <p className="text-slate-400 mb-4">Your appointment request has been sent to Dr. {doctor.name}.</p>
-                    <p className="text-slate-500 text-sm">Redirecting to appointments...</p>
+                    <h2 className="text-xl font-bold text-gray-900 mb-2">Appointment Requested!</h2>
+                    <p className="text-gray-500 mb-2">Your request has been sent to Dr. {doctor.name}.</p>
+                    <p className="text-sm text-gray-400">Redirecting to appointments...</p>
                 </div>
             </div>
         );
@@ -120,36 +97,36 @@ export default function BookAppointmentPage() {
 
     return (
         <div className="max-w-2xl mx-auto animate-fadeIn">
-            <div className="mb-8">
-                <button onClick={() => router.back()} className="text-slate-400 hover:text-white flex items-center gap-2 mb-4">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="mb-6">
+                <button onClick={() => router.back()} className="text-gray-500 hover:text-gray-900 flex items-center gap-2 mb-4 text-sm">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
                     Back
                 </button>
-                <h1 className="text-3xl font-bold text-white mb-2">Book Appointment</h1>
-                <p className="text-slate-400">Schedule an appointment with {doctor.name}</p>
+                <h1 className="page-header">Book Appointment</h1>
+                <p className="page-subtitle">Schedule an appointment with {doctor.name}</p>
             </div>
 
-            {/* Doctor Info Card */}
-            <div className="glass-card p-6 mb-6">
+            {/* Doctor Info */}
+            <div className="glass-card p-6 mb-5">
                 <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-500 flex items-center justify-center">
-                        <span className="text-white text-2xl font-bold">{doctor.name.charAt(0)}</span>
+                    <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-xl">
+                        {doctor.name.charAt(0)}
                     </div>
                     <div>
-                        <h3 className="text-xl font-semibold text-white">{doctor.name}</h3>
-                        <p className="text-sky-400">{doctor.specialization}</p>
-                        <p className="text-slate-400 text-sm">{doctor.email}</p>
+                        <h3 className="text-lg font-semibold text-gray-900">{doctor.name}</h3>
+                        <p className="text-blue-600 text-sm">{doctor.specialization}</p>
+                        <p className="text-gray-500 text-sm">{doctor.email}</p>
                     </div>
                 </div>
 
                 {doctor.availability?.length > 0 && (
-                    <div className="mt-4 pt-4 border-t border-slate-700">
-                        <p className="text-sm text-slate-400 mb-2">Available Hours:</p>
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                        <p className="text-sm text-gray-500 mb-2">Available Hours:</p>
                         <div className="grid grid-cols-2 gap-2">
                             {doctor.availability.map((slot, idx) => (
-                                <div key={idx} className="text-sm text-slate-300">
+                                <div key={idx} className="text-sm text-gray-600">
                                     {getDayName(slot.dayOfWeek)}: {slot.startTime} - {slot.endTime}
                                 </div>
                             ))}
@@ -158,65 +135,34 @@ export default function BookAppointmentPage() {
                 )}
             </div>
 
-            {/* Booking Form */}
+            {/* Form */}
             <div className="glass-card p-6">
                 {error && (
-                    <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
-                        {error}
-                    </div>
+                    <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">{error}</div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
                         <label className="form-label">Preferred Date</label>
-                        <input
-                            type="date"
-                            value={formData.date}
-                            onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                            min={new Date().toISOString().split('T')[0]}
-                            className="input-field"
-                            required
-                        />
+                        <input type="date" value={formData.date} onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                            min={new Date().toISOString().split('T')[0]} className="input-field" required />
                     </div>
-
                     <div>
                         <label className="form-label">Preferred Time</label>
-                        <select
-                            value={formData.time}
-                            onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                            className="select-field"
-                            required
-                        >
+                        <select value={formData.time} onChange={(e) => setFormData({ ...formData, time: e.target.value })} className="select-field" required>
                             <option value="">Select a time slot</option>
-                            {generateTimeSlots().map((time) => (
-                                <option key={time} value={time}>{time}</option>
-                            ))}
+                            {generateTimeSlots().map((time) => <option key={time} value={time}>{time}</option>)}
                         </select>
                     </div>
-
                     <div>
                         <label className="form-label">Reason for Visit (Optional)</label>
-                        <textarea
-                            value={formData.reason}
-                            onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-                            className="input-field min-h-[100px] resize-none"
-                            placeholder="Briefly describe your symptoms or reason for visit..."
-                        />
+                        <textarea value={formData.reason} onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
+                            className="input-field min-h-[100px] resize-none" placeholder="Briefly describe your symptoms or reason for visit..." />
                     </div>
-
-                    <button
-                        type="submit"
-                        disabled={submitting}
-                        className="btn-primary w-full flex items-center justify-center gap-2"
-                    >
+                    <button type="submit" disabled={submitting} className="btn-primary w-full flex items-center justify-center gap-2">
                         {submitting ? (
-                            <>
-                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                Submitting...
-                            </>
-                        ) : (
-                            'Request Appointment'
-                        )}
+                            <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Submitting...</>
+                        ) : 'Request Appointment'}
                     </button>
                 </form>
             </div>

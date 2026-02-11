@@ -7,10 +7,8 @@ interface User {
     _id: string;
     name: string;
     email: string;
-    phone?: string;
-    role: 'patient' | 'doctor' | 'admin';
-    specialization?: string;
-    gender?: string;
+    role: string;
+    phone: string;
     createdAt: string;
 }
 
@@ -18,168 +16,107 @@ export default function AdminUsersPage() {
     const { fetchWithAuth } = useApi();
     const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState(true);
-    const [roleFilter, setRoleFilter] = useState('');
+    const [filter, setFilter] = useState('all');
     const [search, setSearch] = useState('');
-    const [deleting, setDeleting] = useState<string | null>(null);
 
-    useEffect(() => {
-        loadUsers();
-    }, [roleFilter]);
+    useEffect(() => { loadUsers(); }, []);
 
     const loadUsers = async () => {
         try {
-            setLoading(true);
-            let url = '/api/admin/users?limit=100';
-            if (roleFilter) url += `&type=${roleFilter}`;
-            if (search) url += `&search=${encodeURIComponent(search)}`;
-
-            const data = await fetchWithAuth(url);
-            setUsers(data.users);
+            const data = await fetchWithAuth('/api/admin/users');
+            setUsers(data.users || []);
         } catch (error) {
-            console.error('Error loading users:', error);
+            console.error('Error:', error);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        loadUsers();
-    };
-
-    const handleDelete = async (userId: string, role: string) => {
-        if (role === 'admin') {
-            alert('Cannot delete admin users');
-            return;
-        }
-        if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) return;
-
-        setDeleting(userId);
+    const handleDelete = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this user?')) return;
         try {
-            await fetchWithAuth(`/api/patients/${userId}`, { method: 'DELETE' });
+            await fetchWithAuth(`/api/admin/users/${id}`, { method: 'DELETE' });
             loadUsers();
         } catch (error) {
-            console.error('Error deleting user:', error);
-        } finally {
-            setDeleting(null);
+            console.error('Error:', error);
         }
     };
 
-    const formatDate = (dateStr: string) => {
-        return new Date(dateStr).toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-        });
-    };
+    const filtered = users
+        .filter(u => filter === 'all' || u.role === filter)
+        .filter(u => u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase()));
 
-    const getRoleBadgeClass = (role: string) => {
+    const formatDate = (d: string) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+    const roleBadgeClass = (role: string) => {
         switch (role) {
-            case 'patient': return 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-            case 'doctor': return 'bg-sky-500/20 text-sky-400 border-sky-500/30';
-            case 'admin': return 'bg-violet-500/20 text-violet-400 border-violet-500/30';
-            default: return 'bg-slate-500/20 text-slate-400 border-slate-500/30';
+            case 'patient': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+            case 'doctor': return 'bg-blue-50 text-blue-700 border-blue-200';
+            case 'admin': return 'bg-violet-50 text-violet-700 border-violet-200';
+            default: return 'bg-gray-100 text-gray-600 border-gray-200';
         }
     };
 
     return (
         <div className="animate-fadeIn">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-white mb-2">User Management</h1>
-                <p className="text-slate-400">View and manage all users in the system</p>
+            <div className="mb-6">
+                <h1 className="page-header">Manage Users</h1>
+                <p className="page-subtitle">View and manage all system users</p>
             </div>
 
-            {/* Filters */}
-            <div className="glass-card p-4 mb-6">
-                <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-4">
-                    <input
-                        type="text"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Search by name or email..."
-                        className="input-field flex-1"
-                    />
-                    <select
-                        value={roleFilter}
-                        onChange={(e) => setRoleFilter(e.target.value)}
-                        className="select-field md:w-40"
-                    >
-                        <option value="">All Roles</option>
-                        <option value="patient">Patients</option>
-                        <option value="doctor">Doctors</option>
-                        <option value="admin">Admins</option>
-                    </select>
-                    <button type="submit" className="btn-primary">
-                        Search
-                    </button>
-                </form>
+            <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                <input type="text" placeholder="Search by name or email..." value={search} onChange={(e) => setSearch(e.target.value)}
+                    className="input-field max-w-md" />
+                <div className="flex gap-2 flex-wrap">
+                    {['all', 'patient', 'doctor', 'admin'].map((r) => (
+                        <button key={r} onClick={() => setFilter(r)}
+                            className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${filter === r ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>
+                            {r.charAt(0).toUpperCase() + r.slice(1)}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {loading ? (
-                <div className="flex items-center justify-center h-64">
-                    <div className="spinner" />
-                </div>
-            ) : users.length === 0 ? (
+                <div className="flex items-center justify-center h-40"><div className="spinner" /></div>
+            ) : filtered.length === 0 ? (
                 <div className="glass-card p-12 text-center">
-                    <p className="text-slate-400">No users found</p>
+                    <p className="text-gray-400">No users found</p>
                 </div>
             ) : (
-                <div className="glass-card overflow-x-auto">
-                    <table className="data-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>Details</th>
-                                <th>Joined</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {users.map((user) => (
-                                <tr key={user._id}>
-                                    <td>
-                                        <div className="flex items-center gap-3">
-                                            <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${user.role === 'doctor' ? 'bg-sky-500/20' :
-                                                    user.role === 'admin' ? 'bg-violet-500/20' : 'bg-emerald-500/20'
-                                                }`}>
-                                                <span className={`font-semibold ${user.role === 'doctor' ? 'text-sky-400' :
-                                                        user.role === 'admin' ? 'text-violet-400' : 'text-emerald-400'
-                                                    }`}>
-                                                    {user.name.charAt(0)}
-                                                </span>
-                                            </div>
-                                            <span className="font-medium text-white">{user.name}</span>
-                                        </div>
-                                    </td>
-                                    <td className="text-slate-400">{user.email}</td>
-                                    <td>
-                                        <span className={`badge border ${getRoleBadgeClass(user.role)}`}>
-                                            {user.role}
-                                        </span>
-                                    </td>
-                                    <td className="text-slate-400 text-sm">
-                                        {user.specialization && <span>{user.specialization}</span>}
-                                        {user.gender && <span className="capitalize">{user.gender}</span>}
-                                        {user.phone && <span>{user.phone}</span>}
-                                    </td>
-                                    <td className="text-slate-400">{formatDate(user.createdAt)}</td>
-                                    <td>
-                                        {user.role === 'patient' && (
-                                            <button
-                                                onClick={() => handleDelete(user._id, user.role)}
-                                                disabled={deleting === user._id}
-                                                className="text-red-400 hover:text-red-300 text-sm font-medium"
-                                            >
-                                                {deleting === user._id ? 'Deleting...' : 'Delete'}
-                                            </button>
-                                        )}
-                                    </td>
+                <div className="glass-card overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Joined</th>
+                                    <th>Actions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {filtered.map((user) => (
+                                    <tr key={user._id}>
+                                        <td className="font-medium text-gray-900">{user.name}</td>
+                                        <td className="text-gray-500">{user.email}</td>
+                                        <td>
+                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border capitalize ${roleBadgeClass(user.role)}`}>
+                                                {user.role}
+                                            </span>
+                                        </td>
+                                        <td className="text-gray-500">{formatDate(user.createdAt)}</td>
+                                        <td>
+                                            {user.role === 'patient' && (
+                                                <button onClick={() => handleDelete(user._id)} className="btn-danger text-xs">Delete</button>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             )}
         </div>

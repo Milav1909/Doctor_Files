@@ -1,25 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function RegisterPage() {
     const { register } = useAuth();
     const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        phone: '',
-        gender: 'male',
-        password: '',
-        confirmPassword: ''
+        name: '', email: '', password: '', confirmPassword: '', phone: '', gender: 'male'
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -29,22 +20,14 @@ export default function RegisterPage() {
             setError('Passwords do not match');
             return;
         }
-
         if (formData.password.length < 6) {
             setError('Password must be at least 6 characters');
             return;
         }
 
         setLoading(true);
-
         try {
-            await register({
-                name: formData.name,
-                email: formData.email,
-                phone: formData.phone,
-                gender: formData.gender,
-                password: formData.password
-            });
+            await register({ name: formData.name, email: formData.email, password: formData.password, phone: formData.phone, gender: formData.gender });
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Registration failed');
         } finally {
@@ -52,128 +35,79 @@ export default function RegisterPage() {
         }
     };
 
+    const updateField = (field: string, value: string) => {
+        setFormData({ ...formData, [field]: value });
+    };
+
     return (
-        <div className="min-h-screen flex items-center justify-center p-4 py-12">
-            <div className="w-full max-w-md animate-fadeIn">
-                {/* Logo/Header */}
+        <div className="min-h-screen flex items-center justify-center bg-[var(--bg-body)] px-4 py-12">
+            <div className="fixed inset-0 -z-10 overflow-hidden">
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl" />
+                <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-100/40 rounded-full blur-3xl" />
+            </div>
+
+            <div className="w-full max-w-md">
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-sky-500 to-violet-500 mb-4 shadow-lg">
-                        <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                        </svg>
-                    </div>
-                    <h1 className="text-3xl font-bold bg-gradient-to-r from-sky-400 to-violet-400 bg-clip-text text-transparent">
-                        Patient Registration
-                    </h1>
-                    <p className="text-slate-400 mt-2">Create your patient account</p>
+                    <Link href="/" className="inline-flex items-center gap-3 mb-4">
+                        <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center shadow-sm">
+                            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                        </div>
+                        <span className="font-bold text-xl text-gray-900">Doctor Files</span>
+                    </Link>
+                    <p className="text-gray-500 text-sm">Create your patient account</p>
                 </div>
 
-                {/* Register Card */}
                 <div className="glass-card p-8">
-                    {/* Role Badge */}
-                    <div className="flex items-center justify-center gap-2 mb-6 p-3 rounded-lg bg-gradient-to-r from-sky-500/10 to-violet-500/10 border border-sky-500/20">
-                        <span className="text-slate-400 text-sm">Registering as:</span>
-                        <span className="px-3 py-1 rounded-full text-sm font-semibold bg-sky-500/20 text-sky-400 border border-sky-500/30">
-                            👤 Patient
-                        </span>
-                    </div>
-
                     {error && (
-                        <div className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 text-sm">
+                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
                             {error}
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-5">
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <label className="form-label">Full Name</label>
-                            <input
-                                type="text"
-                                name="name"
-                                value={formData.name}
-                                onChange={handleChange}
-                                className="input-field"
-                                placeholder="John Doe"
-                                required
-                            />
+                            <input type="text" value={formData.name} onChange={(e) => updateField('name', e.target.value)}
+                                className="input-field" placeholder="John Doe" required />
                         </div>
-
                         <div>
-                            <label className="form-label">Email Address</label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                className="input-field"
-                                placeholder="you@example.com"
-                                required
-                            />
+                            <label className="form-label">Email</label>
+                            <input type="email" value={formData.email} onChange={(e) => updateField('email', e.target.value)}
+                                className="input-field" placeholder="you@example.com" required />
                         </div>
-
-                        <div>
-                            <label className="form-label">Phone Number</label>
-                            <input
-                                type="tel"
-                                name="phone"
-                                value={formData.phone}
-                                onChange={handleChange}
-                                className="input-field"
-                                placeholder="+91-9876543210"
-                                required
-                            />
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="form-label">Phone</label>
+                                <input type="tel" value={formData.phone} onChange={(e) => updateField('phone', e.target.value)}
+                                    className="input-field" placeholder="+1 234 567 890" required />
+                            </div>
+                            <div>
+                                <label className="form-label">Gender</label>
+                                <select value={formData.gender} onChange={(e) => updateField('gender', e.target.value)}
+                                    className="select-field">
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
                         </div>
-
-                        <div>
-                            <label className="form-label">Gender</label>
-                            <select
-                                name="gender"
-                                value={formData.gender}
-                                onChange={handleChange}
-                                className="select-field"
-                                required
-                            >
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
                         <div>
                             <label className="form-label">Password</label>
-                            <input
-                                type="password"
-                                name="password"
-                                value={formData.password}
-                                onChange={handleChange}
-                                className="input-field"
-                                placeholder="••••••••"
-                                required
-                                minLength={6}
-                            />
+                            <input type="password" value={formData.password} onChange={(e) => updateField('password', e.target.value)}
+                                className="input-field" placeholder="Minimum 6 characters" required />
                         </div>
-
                         <div>
                             <label className="form-label">Confirm Password</label>
-                            <input
-                                type="password"
-                                name="confirmPassword"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                                className="input-field"
-                                placeholder="••••••••"
-                                required
-                            />
+                            <input type="password" value={formData.confirmPassword} onChange={(e) => updateField('confirmPassword', e.target.value)}
+                                className="input-field" placeholder="Re-enter password" required />
                         </div>
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="btn-primary w-full flex items-center justify-center gap-2"
-                        >
+                        <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2">
                             {loading ? (
                                 <>
-                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                     Creating account...
                                 </>
                             ) : (
@@ -182,19 +116,13 @@ export default function RegisterPage() {
                         </button>
                     </form>
 
-                    <p className="text-center mt-6 text-slate-400">
+                    <p className="mt-6 text-center text-sm text-gray-500">
                         Already have an account?{' '}
-                        <Link href="/login" className="text-sky-400 hover:text-sky-300 font-medium">
-                            Sign in here
-                        </Link>
+                        <Link href="/login" className="text-blue-600 font-medium hover:text-blue-700">Sign in</Link>
                     </p>
-                </div>
 
-                {/* Info note */}
-                <div className="mt-6 p-4 glass-card text-sm">
-                    <p className="text-slate-400 font-medium">💡 Note</p>
-                    <p className="text-slate-500 mt-1">
-                        Doctor and Admin accounts are created by the system administrator.
+                    <p className="mt-4 text-xs text-gray-400 text-center">
+                        Doctor and admin accounts are created by the system administrator.
                     </p>
                 </div>
             </div>
