@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { Building2 } from 'lucide-react';
 
 export default function RegisterPage() {
     const { register } = useAuth();
@@ -42,26 +43,24 @@ export default function RegisterPage() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-[var(--bg-body)] px-4 py-12">
             <div className="fixed inset-0 -z-10 overflow-hidden">
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl" />
-                <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-100/40 rounded-full blur-3xl" />
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-100/50 dark:bg-blue-900/20 rounded-full blur-3xl" />
+                <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-100/40 dark:bg-indigo-900/15 rounded-full blur-3xl" />
             </div>
 
             <div className="w-full max-w-md">
                 <div className="text-center mb-8">
                     <Link href="/" className="inline-flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center shadow-sm">
-                            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                            </svg>
+                            <Building2 className="w-6 h-6 text-white" />
                         </div>
-                        <span className="font-bold text-xl text-gray-900">Doctor Files</span>
+                        <span className="font-bold text-xl text-[var(--text-primary)]">Doctor Files</span>
                     </Link>
-                    <p className="text-gray-500 text-sm">Create your patient account</p>
+                    <p className="text-[var(--text-secondary)] text-sm">Create your patient account</p>
                 </div>
 
                 <div className="glass-card p-8">
                     {error && (
-                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                        <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm">
                             {error}
                         </div>
                     )}
@@ -116,12 +115,12 @@ export default function RegisterPage() {
                         </button>
                     </form>
 
-                    <p className="mt-6 text-center text-sm text-gray-500">
+                    <p className="mt-6 text-center text-sm text-[var(--text-secondary)]">
                         Already have an account?{' '}
-                        <Link href="/login" className="text-blue-600 font-medium hover:text-blue-700">Sign in</Link>
+                        <Link href="/login" className="text-[var(--primary)] font-medium hover:underline">Sign in</Link>
                     </p>
 
-                    <p className="mt-4 text-xs text-gray-400 text-center">
+                    <p className="mt-4 text-xs text-[var(--text-muted)] text-center">
                         Doctor and admin accounts are created by the system administrator.
                     </p>
                 </div>

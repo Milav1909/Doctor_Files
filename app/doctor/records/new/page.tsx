@@ -58,7 +58,7 @@ function NewRecordForm() {
     return (
         <div className="max-w-2xl mx-auto animate-fadeIn">
             <div className="mb-6">
-                <button onClick={() => router.back()} className="text-gray-500 hover:text-gray-900 flex items-center gap-2 mb-4 text-sm">
+                <button onClick={() => router.back()} className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] flex items-center gap-2 mb-4 text-sm">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
@@ -70,7 +70,7 @@ function NewRecordForm() {
 
             <div className="glass-card p-6">
                 {error && (
-                    <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">{error}</div>
+                    <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm">{error}</div>
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-5">

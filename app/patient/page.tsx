@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { CalendarDays, Clock, CheckCircle, Search, ClipboardList, FileText } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useApi } from '@/hooks/useApi';
 
@@ -55,17 +56,17 @@ export default function PatientDashboard() {
             {/* Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 stagger-children">
                 {[
-                    { label: 'Total Appointments', value: stats.total, color: 'border-t-blue-500', icon: '📅' },
-                    { label: 'Pending', value: stats.pending, color: 'border-t-amber-500', icon: '⏳' },
-                    { label: 'Approved', value: stats.approved, color: 'border-t-emerald-500', icon: '✅' },
+                    { label: 'Total Appointments', value: stats.total, color: 'border-t-blue-500', icon: <CalendarDays className="w-6 h-6 text-blue-500" /> },
+                    { label: 'Pending', value: stats.pending, color: 'border-t-amber-500', icon: <Clock className="w-6 h-6 text-amber-500" /> },
+                    { label: 'Approved', value: stats.approved, color: 'border-t-emerald-500', icon: <CheckCircle className="w-6 h-6 text-emerald-500" /> },
                 ].map((s) => (
                     <div key={s.label} className={`stat-card border-t-4 ${s.color}`}>
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">{s.label}</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-1">{s.value}</p>
+                                <p className="text-sm text-[var(--text-secondary)]">{s.label}</p>
+                                <p className="text-3xl font-bold text-[var(--text-primary)] mt-1">{s.value}</p>
                             </div>
-                            <span className="text-2xl">{s.icon}</span>
+                            {s.icon}
                         </div>
                     </div>
                 ))}
@@ -73,16 +74,16 @@ export default function PatientDashboard() {
 
             {/* Quick Actions */}
             <div className="mb-8">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+                <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Quick Actions</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 stagger-children">
                     {[
-                        { href: '/patient/doctors', label: 'Find Doctors', icon: '🔍' },
-                        { href: '/patient/appointments', label: 'My Appointments', icon: '📋' },
-                        { href: '/patient/records', label: 'Medical Records', icon: '📄' },
+                        { href: '/patient/doctors', label: 'Find Doctors', icon: <Search className="w-6 h-6 text-[var(--text-secondary)]" /> },
+                        { href: '/patient/appointments', label: 'My Appointments', icon: <ClipboardList className="w-6 h-6 text-[var(--text-secondary)]" /> },
+                        { href: '/patient/records', label: 'Medical Records', icon: <FileText className="w-6 h-6 text-[var(--text-secondary)]" /> },
                     ].map((action) => (
                         <Link key={action.href} href={action.href} className="glass-card hoverable p-4 text-center group">
-                            <span className="text-2xl block mb-2">{action.icon}</span>
-                            <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors">{action.label}</span>
+                            <div className="flex justify-center mb-2">{action.icon}</div>
+                            <span className="text-sm font-medium text-[var(--text-secondary)] group-hover:text-[var(--primary)] transition-colors">{action.label}</span>
                         </Link>
                     ))}
                 </div>
@@ -90,14 +91,14 @@ export default function PatientDashboard() {
 
             {/* Recent Appointments */}
             <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Appointments</h2>
+                <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Recent Appointments</h2>
                 {loading ? (
                     <div className="flex items-center justify-center h-32">
                         <div className="spinner" />
                     </div>
                 ) : appointments.length === 0 ? (
                     <div className="glass-card p-10 text-center">
-                        <p className="text-gray-400 mb-3">No appointments yet</p>
+                        <p className="text-[var(--text-muted)] mb-3">No appointments yet</p>
                         <Link href="/patient/doctors" className="btn-primary text-sm">Find a Doctor</Link>
                     </div>
                 ) : (
@@ -105,12 +106,12 @@ export default function PatientDashboard() {
                         {appointments.map((apt) => (
                             <div key={apt._id} className="glass-card p-4 flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-sm">
+                                    <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-sm">
                                         {apt.doctorId.name.charAt(0)}
                                     </div>
                                     <div>
-                                        <p className="font-medium text-gray-900">{apt.doctorId.name}</p>
-                                        <p className="text-sm text-gray-500">{formatDate(apt.date)} • {apt.time}</p>
+                                        <p className="font-medium text-[var(--text-primary)]">{apt.doctorId.name}</p>
+                                        <p className="text-sm text-[var(--text-secondary)]">{formatDate(apt.date)} • {apt.time}</p>
                                     </div>
                                 </div>
                                 <span className={`badge badge-${apt.status}`}>{apt.status}</span>

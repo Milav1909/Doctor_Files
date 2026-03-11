@@ -4,6 +4,8 @@ import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import ThemeToggle from '@/components/ThemeToggle';
+import { Building2, LogOut, Menu } from 'lucide-react';
 
 interface DashboardLayoutProps {
     children: ReactNode;
@@ -23,9 +25,9 @@ export default function DashboardLayout({ children, role, navItems }: DashboardL
     };
 
     const roleLightColors: Record<string, string> = {
-        patient: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-        doctor: 'bg-blue-50 text-blue-700 border-blue-200',
-        admin: 'bg-violet-50 text-violet-700 border-violet-200'
+        patient: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800',
+        doctor: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800',
+        admin: 'bg-violet-50 text-violet-700 border-violet-200 dark:bg-violet-900/30 dark:text-violet-400 dark:border-violet-800'
     };
 
     const roleLabels: Record<string, string> = {
@@ -39,7 +41,7 @@ export default function DashboardLayout({ children, role, navItems }: DashboardL
             {/* Mobile overlay */}
             {sidebarOpen && (
                 <div
-                    className="fixed inset-0 bg-gray-900/30 backdrop-blur-sm z-40 md:hidden"
+                    className="fixed inset-0 bg-gray-900/30 dark:bg-black/50 backdrop-blur-sm z-40 md:hidden"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
@@ -51,20 +53,18 @@ export default function DashboardLayout({ children, role, navItems }: DashboardL
                     <div className="px-5 py-5 border-b border-[var(--border-color)]">
                         <Link href={`/${role}`} className="flex items-center gap-3">
                             <div className={`w-9 h-9 rounded-xl ${roleColors[role]} flex items-center justify-center shadow-sm`}>
-                                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
+                                <Building2 className="w-5 h-5 text-white" />
                             </div>
                             <div>
-                                <h1 className="font-bold text-gray-900 text-sm">Doctor Files</h1>
-                                <p className="text-[11px] text-gray-500">{roleLabels[role]} Portal</p>
+                                <h1 className="font-bold text-[var(--text-primary)] text-sm">Doctor Files</h1>
+                                <p className="text-[11px] text-[var(--text-muted)]">{roleLabels[role]} Portal</p>
                             </div>
                         </Link>
                     </div>
 
                     {/* Navigation */}
                     <nav className="flex-1 py-4 overflow-y-auto">
-                        <p className="px-5 py-2 text-[10px] font-semibold uppercase tracking-wider text-gray-400">Menu</p>
+                        <p className="px-5 py-2 text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]">Menu</p>
                         {navItems.map((item) => (
                             <Link
                                 key={item.href}
@@ -87,18 +87,16 @@ export default function DashboardLayout({ children, role, navItems }: DashboardL
                                 </span>
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-gray-900 truncate">{user?.name}</p>
-                                <p className="text-[11px] text-gray-500 truncate">{user?.email}</p>
+                                <p className="text-sm font-medium text-[var(--text-primary)] truncate">{user?.name}</p>
+                                <p className="text-[11px] text-[var(--text-muted)] truncate">{user?.email}</p>
                             </div>
                         </div>
 
                         <button
                             onClick={logout}
-                            className="w-full py-2 px-3 text-sm text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors flex items-center gap-2"
+                            className="w-full py-2 px-3 text-sm text-[var(--text-secondary)] hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex items-center gap-2"
                         >
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                            </svg>
+                            <LogOut className="w-4 h-4" />
                             Sign Out
                         </button>
                     </div>
@@ -108,16 +106,14 @@ export default function DashboardLayout({ children, role, navItems }: DashboardL
             {/* Main content */}
             <main className="flex-1 min-h-screen md:ml-0 flex flex-col">
                 {/* Top header bar */}
-                <header className="sticky top-0 z-30 bg-white/80 backdrop-blur-md border-b border-[var(--border-color)]">
+                <header className="sticky top-0 z-30 bg-[var(--bg-card)]/80 backdrop-blur-md border-b border-[var(--border-color)]">
                     <div className="flex items-center justify-between px-6 py-3">
                         {/* Mobile hamburger */}
                         <button
                             onClick={() => setSidebarOpen(true)}
-                            className="p-2 text-gray-500 hover:text-gray-900 rounded-lg md:hidden"
+                            className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] rounded-lg md:hidden"
                         >
-                            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
+                            <Menu className="w-5 h-5" />
                         </button>
 
                         {/* Role badge (desktop) */}
@@ -129,13 +125,14 @@ export default function DashboardLayout({ children, role, navItems }: DashboardL
                         </div>
 
                         {/* Center title on mobile */}
-                        <span className="font-semibold text-gray-900 text-sm md:hidden">{roleLabels[role]} Dashboard</span>
+                        <span className="font-semibold text-[var(--text-primary)] text-sm md:hidden">{roleLabels[role]} Dashboard</span>
 
-                        {/* Right side - user info */}
+                        {/* Right side - user info + theme toggle */}
                         <div className="flex items-center gap-3">
+                            <ThemeToggle />
                             <div className="hidden sm:block text-right">
-                                <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-                                <p className="text-[11px] text-gray-500">{user?.email}</p>
+                                <p className="text-sm font-medium text-[var(--text-primary)]">{user?.name}</p>
+                                <p className="text-[11px] text-[var(--text-muted)]">{user?.email}</p>
                             </div>
                             <div className={`w-8 h-8 rounded-full ${roleColors[role]} flex items-center justify-center`}>
                                 <span className="text-white font-semibold text-xs">

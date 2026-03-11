@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
+import { Building2, User, Stethoscope, Settings } from 'lucide-react';
+import { ReactNode } from 'react';
 
 export default function LoginPage() {
     const { login } = useAuth();
@@ -26,18 +28,18 @@ export default function LoginPage() {
         }
     };
 
-    const roles = [
-        { key: 'patient' as const, label: 'Patient', icon: '👤', desc: 'Book appointments' },
-        { key: 'doctor' as const, label: 'Doctor', icon: '🩺', desc: 'Manage patients' },
-        { key: 'admin' as const, label: 'Admin', icon: '⚙️', desc: 'System settings' }
+    const roles: { key: 'patient' | 'doctor' | 'admin'; label: string; icon: ReactNode; desc: string }[] = [
+        { key: 'patient', label: 'Patient', icon: <User className="w-5 h-5" />, desc: 'Book appointments' },
+        { key: 'doctor', label: 'Doctor', icon: <Stethoscope className="w-5 h-5" />, desc: 'Manage patients' },
+        { key: 'admin', label: 'Admin', icon: <Settings className="w-5 h-5" />, desc: 'System settings' }
     ];
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[var(--bg-body)] px-4 py-12">
             {/* Background decoration */}
             <div className="fixed inset-0 -z-10 overflow-hidden">
-                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl" />
-                <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-100/40 rounded-full blur-3xl" />
+                <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-100/50 dark:bg-blue-900/20 rounded-full blur-3xl" />
+                <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-100/40 dark:bg-indigo-900/15 rounded-full blur-3xl" />
             </div>
 
             <div className="w-full max-w-md">
@@ -45,13 +47,11 @@ export default function LoginPage() {
                 <div className="text-center mb-8">
                     <Link href="/" className="inline-flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center shadow-sm">
-                            <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                            </svg>
+                            <Building2 className="w-6 h-6 text-white" />
                         </div>
-                        <span className="font-bold text-xl text-gray-900">Doctor Files</span>
+                        <span className="font-bold text-xl text-[var(--text-primary)]">Doctor Files</span>
                     </Link>
-                    <p className="text-gray-500 text-sm">Sign in to your account</p>
+                    <p className="text-[var(--text-secondary)] text-sm">Sign in to your account</p>
                 </div>
 
                 <div className="glass-card p-8">
@@ -62,18 +62,18 @@ export default function LoginPage() {
                                 key={r.key}
                                 onClick={() => setRole(r.key)}
                                 className={`p-3 rounded-lg text-center transition-all border ${role === r.key
-                                    ? 'bg-blue-50 border-blue-200 text-blue-700'
-                                    : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50'
+                                    ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-400'
+                                    : 'bg-[var(--bg-card)] border-[var(--border-color)] text-[var(--text-secondary)] hover:bg-[var(--bg-body)]'
                                     }`}
                             >
-                                <span className="text-lg block">{r.icon}</span>
+                                <div className="flex justify-center">{r.icon}</div>
                                 <span className="text-xs font-semibold block mt-1">{r.label}</span>
                             </button>
                         ))}
                     </div>
 
                     {error && (
-                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+                        <div className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm">
                             {error}
                         </div>
                     )}
@@ -117,23 +117,23 @@ export default function LoginPage() {
                         </button>
                     </form>
 
-                    <p className="mt-6 text-center text-sm text-gray-500">
+                    <p className="mt-6 text-center text-sm text-[var(--text-secondary)]">
                         Need an account?{' '}
-                        <Link href="/register" className="text-blue-600 font-medium hover:text-blue-700">
+                        <Link href="/register" className="text-[var(--primary)] font-medium hover:underline">
                             Register here
                         </Link>
                     </p>
 
                     {/* Demo credentials */}
-                    <div className="mt-6 pt-5 border-t border-gray-100">
+                    <div className="mt-6 pt-5 border-t border-[var(--border-color)]">
                         <button
                             onClick={() => setShowDemo(!showDemo)}
-                            className="text-xs text-gray-400 hover:text-gray-600 w-full text-center transition-colors"
+                            className="text-xs text-[var(--text-muted)] hover:text-[var(--text-secondary)] w-full text-center transition-colors"
                         >
                             {showDemo ? 'Hide' : 'Show'} demo credentials
                         </button>
                         {showDemo && (
-                            <div className="mt-3 p-3 bg-gray-50 rounded-lg text-xs text-gray-500 space-y-1">
+                            <div className="mt-3 p-3 bg-[var(--bg-body)] rounded-lg text-xs text-[var(--text-secondary)] space-y-1">
                                 <p><strong>Patient:</strong> patient@demo.com / password123</p>
                                 <p><strong>Doctor:</strong> doctor@demo.com / password123</p>
                                 <p><strong>Admin:</strong> admin@demo.com / password123</p>

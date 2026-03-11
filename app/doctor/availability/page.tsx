@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Check } from 'lucide-react';
 import { useApi } from '@/hooks/useApi';
 
 interface TimeSlot {
@@ -73,7 +74,7 @@ export default function DoctorAvailabilityPage() {
                 <button onClick={handleSave} disabled={saving} className="btn-primary flex items-center gap-2">
                     {saving ? (
                         <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Saving...</>
-                    ) : saved ? '✓ Saved' : 'Save Changes'}
+                    ) : saved ? <><Check className="w-4 h-4" /> Saved</> : 'Save Changes'}
                 </button>
             </div>
 
@@ -83,26 +84,26 @@ export default function DoctorAvailabilityPage() {
                     return (
                         <div key={day} className="glass-card p-5">
                             <div className="flex items-center justify-between mb-3">
-                                <h3 className="font-semibold text-gray-900">{day}</h3>
-                                <button onClick={() => addSlot(dayIdx)} className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                <h3 className="font-semibold text-[var(--text-primary)]">{day}</h3>
+                                <button onClick={() => addSlot(dayIdx)} className="text-sm text-[var(--primary)] hover:underline font-medium">
                                     + Add Slot
                                 </button>
                             </div>
 
                             {daySlots.length === 0 ? (
-                                <p className="text-sm text-gray-400">No hours set</p>
+                                <p className="text-sm text-[var(--text-muted)]">No hours set</p>
                             ) : (
                                 <div className="space-y-2">
                                     {daySlots.map((slot) => (
-                                        <div key={slot.originalIndex} className="flex items-center gap-3 bg-gray-50 rounded-lg p-3">
+                                        <div key={slot.originalIndex} className="flex items-center gap-3 bg-[var(--bg-body)] rounded-lg p-3">
                                             <input type="time" value={slot.startTime}
                                                 onChange={(e) => updateSlot(slot.originalIndex, 'startTime', e.target.value)}
                                                 className="input-field !w-auto !py-1.5 !px-3 text-sm" />
-                                            <span className="text-gray-400">to</span>
+                                            <span className="text-[var(--text-muted)]">to</span>
                                             <input type="time" value={slot.endTime}
                                                 onChange={(e) => updateSlot(slot.originalIndex, 'endTime', e.target.value)}
                                                 className="input-field !w-auto !py-1.5 !px-3 text-sm" />
-                                            <button onClick={() => removeSlot(slot.originalIndex)} className="text-red-400 hover:text-red-600 ml-auto">
+                                            <button onClick={() => removeSlot(slot.originalIndex)} className="text-red-400 hover:text-red-600 dark:text-red-500 dark:hover:text-red-400 ml-auto">
                                                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>

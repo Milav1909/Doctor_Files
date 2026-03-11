@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --primary: #3b82f6;
   --primary-dark: #2563eb;
@@ -24,6 +26,29 @@
   --radius: 12px;
 }
 
+.dark {
+  --primary: #60a5fa;
+  --primary-dark: #3b82f6;
+  --primary-light: #93bbfd;
+  --secondary: #818cf8;
+  --accent: #a78bfa;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --bg-body: #0f172a;
+  --bg-card: #1e293b;
+  --bg-sidebar: #1e293b;
+  --bg-input: #1e293b;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border-color: #334155;
+  --border-hover: #475569;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -39,6 +64,7 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ============================================
@@ -49,7 +75,7 @@ body {
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, background-color 0.3s ease;
 }
 
 .glass-card-hover:hover,
@@ -103,7 +129,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: white;
+  background: var(--bg-card);
   color: var(--text-primary);
   font-weight: 500;
   padding: 10px 22px;
@@ -127,7 +153,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: #16a34a;
+  background: var(--success);
   color: white;
   font-weight: 600;
   padding: 8px 16px;
@@ -140,7 +166,7 @@ body {
 }
 
 .btn-success:hover {
-  background: #15803d;
+  filter: brightness(0.9);
   transform: translateY(-1px);
 }
 
@@ -155,7 +181,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: #dc2626;
+  background: var(--error);
   color: white;
   font-weight: 600;
   padding: 8px 16px;
@@ -168,7 +194,7 @@ body {
 }
 
 .btn-danger:hover {
-  background: #b91c1c;
+  filter: brightness(0.9);
   transform: translateY(-1px);
 }
 
@@ -279,6 +305,37 @@ body {
   border: 1px solid #bfdbfe;
 }
 
+/* Dark badge variants */
+.dark .badge-pending {
+  background: #78350f;
+  color: #fef3c7;
+  border-color: #92400e;
+}
+
+.dark .badge-approved {
+  background: #14532d;
+  color: #dcfce7;
+  border-color: #166534;
+}
+
+.dark .badge-rejected {
+  background: #7f1d1d;
+  color: #fee2e2;
+  border-color: #991b1b;
+}
+
+.dark .badge-cancelled {
+  background: #334155;
+  color: #cbd5e1;
+  border-color: #475569;
+}
+
+.dark .badge-completed {
+  background: #1e3a5f;
+  color: #bfdbfe;
+  border-color: #1e40af;
+}
+
 /* ============================================
    STAT CARDS
    ============================================ */
@@ -302,6 +359,7 @@ body {
 .sidebar {
   background: var(--bg-sidebar);
   border-right: 1px solid var(--border-color);
+  transition: background-color 0.3s ease;
 }
 
 .sidebar-link {
@@ -320,12 +378,12 @@ body {
 }
 
 .sidebar-link:hover {
-  background: #f1f5f9;
+  background: var(--bg-body);
   color: var(--primary);
 }
 
 .sidebar-link.active {
-  background: #eff6ff;
+  background: rgba(59, 130, 246, 0.1);
   color: var(--primary);
   font-weight: 600;
 }
@@ -359,7 +417,7 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.6px;
   color: var(--text-secondary);
-  background: #f8fafc;
+  background: var(--bg-body);
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -373,7 +431,7 @@ body {
 
 .data-table td {
   padding: 14px 16px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border-color);
   font-size: 14px;
   color: var(--text-primary);
 }
@@ -387,7 +445,7 @@ body {
 }
 
 .data-table tbody tr:hover td {
-  background: #f8fafc;
+  background: var(--bg-body);
 }
 
 /* ============================================
@@ -540,7 +598,7 @@ body {
     bottom: 0;
     z-index: 50;
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, background-color 0.3s ease;
   }
 
   .sidebar.open {
@@ -567,4 +625,12 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }

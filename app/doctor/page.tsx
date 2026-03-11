@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { CalendarDays, Clock, CheckCircle, Flag, ClipboardList, Clock3, Users, FileText } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useApi } from '@/hooks/useApi';
 
@@ -21,9 +22,7 @@ export default function DoctorDashboard() {
     const [updating, setUpdating] = useState<string | null>(null);
     const [stats, setStats] = useState({ total: 0, pending: 0, approved: 0, completed: 0 });
 
-    useEffect(() => {
-        loadDashboard();
-    }, []);
+    useEffect(() => { loadDashboard(); }, []);
 
     const loadDashboard = async () => {
         try {
@@ -69,18 +68,18 @@ export default function DoctorDashboard() {
             {/* Stats */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8 stagger-children">
                 {[
-                    { label: 'Total', value: stats.total, color: 'border-t-blue-500', icon: '📅' },
-                    { label: 'Pending', value: stats.pending, color: 'border-t-amber-500', icon: '⏳' },
-                    { label: 'Approved', value: stats.approved, color: 'border-t-emerald-500', icon: '✅' },
-                    { label: 'Completed', value: stats.completed, color: 'border-t-indigo-500', icon: '🏁' },
+                    { label: 'Total', value: stats.total, color: 'border-t-blue-500', icon: <CalendarDays className="w-6 h-6 text-blue-500" /> },
+                    { label: 'Pending', value: stats.pending, color: 'border-t-amber-500', icon: <Clock className="w-6 h-6 text-amber-500" /> },
+                    { label: 'Approved', value: stats.approved, color: 'border-t-emerald-500', icon: <CheckCircle className="w-6 h-6 text-emerald-500" /> },
+                    { label: 'Completed', value: stats.completed, color: 'border-t-indigo-500', icon: <Flag className="w-6 h-6 text-indigo-500" /> },
                 ].map((s) => (
                     <div key={s.label} className={`stat-card border-t-4 ${s.color}`}>
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">{s.label}</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-1">{s.value}</p>
+                                <p className="text-sm text-[var(--text-secondary)]">{s.label}</p>
+                                <p className="text-3xl font-bold text-[var(--text-primary)] mt-1">{s.value}</p>
                             </div>
-                            <span className="text-2xl">{s.icon}</span>
+                            {s.icon}
                         </div>
                     </div>
                 ))}
@@ -88,17 +87,17 @@ export default function DoctorDashboard() {
 
             {/* Quick Actions */}
             <div className="mb-8">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+                <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Quick Actions</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 stagger-children">
                     {[
-                        { href: '/doctor/appointments', label: 'Appointments', icon: '📋' },
-                        { href: '/doctor/availability', label: 'Availability', icon: '🕐' },
-                        { href: '/doctor/patients', label: 'Patients', icon: '👥' },
-                        { href: '/doctor/records', label: 'Records', icon: '📄' },
+                        { href: '/doctor/appointments', label: 'Appointments', icon: <ClipboardList className="w-6 h-6 text-[var(--text-secondary)]" /> },
+                        { href: '/doctor/availability', label: 'Availability', icon: <Clock3 className="w-6 h-6 text-[var(--text-secondary)]" /> },
+                        { href: '/doctor/patients', label: 'Patients', icon: <Users className="w-6 h-6 text-[var(--text-secondary)]" /> },
+                        { href: '/doctor/records', label: 'Records', icon: <FileText className="w-6 h-6 text-[var(--text-secondary)]" /> },
                     ].map((action) => (
                         <a key={action.href} href={action.href} className="glass-card hoverable p-4 text-center group">
-                            <span className="text-2xl block mb-2">{action.icon}</span>
-                            <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors">{action.label}</span>
+                            <div className="flex justify-center mb-2">{action.icon}</div>
+                            <span className="text-sm font-medium text-[var(--text-secondary)] group-hover:text-[var(--primary)] transition-colors">{action.label}</span>
                         </a>
                     ))}
                 </div>
@@ -106,12 +105,12 @@ export default function DoctorDashboard() {
 
             {/* Pending Requests */}
             <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Pending Requests</h2>
+                <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Pending Requests</h2>
                 {loading ? (
                     <div className="flex items-center justify-center h-32"><div className="spinner" /></div>
                 ) : pendingAppointments.length === 0 ? (
                     <div className="glass-card p-10 text-center">
-                        <p className="text-gray-400">No pending appointment requests</p>
+                        <p className="text-[var(--text-muted)]">No pending appointment requests</p>
                     </div>
                 ) : (
                     <div className="space-y-3">
@@ -119,13 +118,13 @@ export default function DoctorDashboard() {
                             <div key={apt._id} className="glass-card p-5">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-11 h-11 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-700 font-bold">
+                                        <div className="w-11 h-11 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-700 dark:text-emerald-400 font-bold">
                                             {apt.patientId.name.charAt(0)}
                                         </div>
                                         <div>
-                                            <p className="font-medium text-gray-900">{apt.patientId.name}</p>
-                                            <p className="text-sm text-gray-500">{formatDate(apt.date)} • {apt.time}</p>
-                                            {apt.reason && <p className="text-sm text-gray-400 mt-0.5">{apt.reason}</p>}
+                                            <p className="font-medium text-[var(--text-primary)]">{apt.patientId.name}</p>
+                                            <p className="text-sm text-[var(--text-secondary)]">{formatDate(apt.date)} • {apt.time}</p>
+                                            {apt.reason && <p className="text-sm text-[var(--text-muted)] mt-0.5">{apt.reason}</p>}
                                         </div>
                                     </div>
                                     <div className="flex gap-2">

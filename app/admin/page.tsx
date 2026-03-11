@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Users, Stethoscope, CalendarDays, Clock, UserCog, ClipboardList } from 'lucide-react';
 import { useApi } from '@/hooks/useApi';
 
 interface Stats {
@@ -17,9 +18,7 @@ export default function AdminDashboard() {
     const [stats, setStats] = useState<Stats | null>(null);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        loadStats();
-    }, []);
+    useEffect(() => { loadStats(); }, []);
 
     const loadStats = async () => {
         try {
@@ -37,10 +36,10 @@ export default function AdminDashboard() {
     }
 
     const statCards = [
-        { label: 'Patients', value: stats?.totalPatients || 0, color: 'border-t-emerald-500', icon: '👥' },
-        { label: 'Doctors', value: stats?.totalDoctors || 0, color: 'border-t-blue-500', icon: '🩺' },
-        { label: 'Appointments', value: stats?.totalAppointments || 0, color: 'border-t-violet-500', icon: '📅' },
-        { label: 'Pending', value: stats?.pendingAppointments || 0, color: 'border-t-amber-500', icon: '⏳' },
+        { label: 'Patients', value: stats?.totalPatients || 0, color: 'border-t-emerald-500', icon: <Users className="w-6 h-6 text-emerald-500" /> },
+        { label: 'Doctors', value: stats?.totalDoctors || 0, color: 'border-t-blue-500', icon: <Stethoscope className="w-6 h-6 text-blue-500" /> },
+        { label: 'Appointments', value: stats?.totalAppointments || 0, color: 'border-t-violet-500', icon: <CalendarDays className="w-6 h-6 text-violet-500" /> },
+        { label: 'Pending', value: stats?.pendingAppointments || 0, color: 'border-t-amber-500', icon: <Clock className="w-6 h-6 text-amber-500" /> },
     ];
 
     return (
@@ -56,10 +55,10 @@ export default function AdminDashboard() {
                     <div key={s.label} className={`stat-card border-t-4 ${s.color}`}>
                         <div className="flex items-center justify-between">
                             <div>
-                                <p className="text-sm text-gray-500">{s.label}</p>
-                                <p className="text-3xl font-bold text-gray-900 mt-1">{s.value}</p>
+                                <p className="text-sm text-[var(--text-secondary)]">{s.label}</p>
+                                <p className="text-3xl font-bold text-[var(--text-primary)] mt-1">{s.value}</p>
                             </div>
-                            <span className="text-2xl">{s.icon}</span>
+                            {s.icon}
                         </div>
                     </div>
                 ))}
@@ -67,15 +66,15 @@ export default function AdminDashboard() {
 
             {/* Quick Actions */}
             <div className="mb-8">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+                <h2 className="text-lg font-semibold text-[var(--text-primary)] mb-4">Quick Actions</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3 stagger-children">
                     {[
-                        { href: '/admin/users', label: 'Manage Users', icon: '👤' },
-                        { href: '/admin/appointments', label: 'All Appointments', icon: '📋' },
+                        { href: '/admin/users', label: 'Manage Users', icon: <UserCog className="w-6 h-6 text-[var(--text-secondary)]" /> },
+                        { href: '/admin/appointments', label: 'All Appointments', icon: <ClipboardList className="w-6 h-6 text-[var(--text-secondary)]" /> },
                     ].map((action) => (
                         <a key={action.href} href={action.href} className="glass-card hoverable p-4 text-center group">
-                            <span className="text-2xl block mb-2">{action.icon}</span>
-                            <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600 transition-colors">{action.label}</span>
+                            <div className="flex justify-center mb-2">{action.icon}</div>
+                            <span className="text-sm font-medium text-[var(--text-secondary)] group-hover:text-[var(--primary)] transition-colors">{action.label}</span>
                         </a>
                     ))}
                 </div>
@@ -84,7 +83,7 @@ export default function AdminDashboard() {
             {/* Breakdown */}
             <div className="grid md:grid-cols-2 gap-4">
                 <div className="glass-card p-6">
-                    <h3 className="font-semibold text-gray-900 mb-4">Appointment Breakdown</h3>
+                    <h3 className="font-semibold text-[var(--text-primary)] mb-4">Appointment Breakdown</h3>
                     <div className="space-y-3">
                         {[
                             { label: 'Pending', value: stats?.pendingAppointments || 0, bar: 'bg-amber-400' },
@@ -94,16 +93,16 @@ export default function AdminDashboard() {
                             <div key={item.label} className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <div className={`w-2 h-2 rounded-full ${item.bar}`} />
-                                    <span className="text-sm text-gray-600">{item.label}</span>
+                                    <span className="text-sm text-[var(--text-secondary)]">{item.label}</span>
                                 </div>
-                                <span className="font-semibold text-gray-900">{item.value}</span>
+                                <span className="font-semibold text-[var(--text-primary)]">{item.value}</span>
                             </div>
                         ))}
                     </div>
                 </div>
 
                 <div className="glass-card p-6">
-                    <h3 className="font-semibold text-gray-900 mb-4">User Breakdown</h3>
+                    <h3 className="font-semibold text-[var(--text-primary)] mb-4">User Breakdown</h3>
                     <div className="space-y-3">
                         {[
                             { label: 'Patients', value: stats?.totalPatients || 0, bar: 'bg-emerald-400' },
@@ -112,9 +111,9 @@ export default function AdminDashboard() {
                             <div key={item.label} className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
                                     <div className={`w-2 h-2 rounded-full ${item.bar}`} />
-                                    <span className="text-sm text-gray-600">{item.label}</span>
+                                    <span className="text-sm text-[var(--text-secondary)]">{item.label}</span>
                                 </div>
-                                <span className="font-semibold text-gray-900">{item.value}</span>
+                                <span className="font-semibold text-[var(--text-primary)]">{item.value}</span>
                             </div>
                         ))}
                     </div>

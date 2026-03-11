@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { CheckCircle } from 'lucide-react';
 import { useApi } from '@/hooks/useApi';
 
 interface Doctor {
@@ -58,31 +59,31 @@ export default function FindDoctorsPage() {
                 <div className="flex items-center justify-center h-40"><div className="spinner" /></div>
             ) : filtered.length === 0 ? (
                 <div className="glass-card p-12 text-center">
-                    <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-16 h-16 mx-auto mb-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                    <p className="text-gray-400">No doctors found matching your search.</p>
+                    <p className="text-[var(--text-muted)]">No doctors found matching your search.</p>
                 </div>
             ) : (
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 stagger-children">
                     {filtered.map((doctor) => (
                         <div key={doctor._id} className="glass-card hoverable p-6">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 font-bold text-lg">
+                                <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-lg">
                                     {doctor.name.charAt(0)}
                                 </div>
                                 <div>
-                                    <h3 className="font-semibold text-gray-900">{doctor.name}</h3>
-                                    <p className="text-sm text-blue-600">{doctor.specialization}</p>
+                                    <h3 className="font-semibold text-[var(--text-primary)]">{doctor.name}</h3>
+                                    <p className="text-sm text-[var(--primary)]">{doctor.specialization}</p>
                                 </div>
                             </div>
 
-                            <div className="space-y-1.5 mb-5 text-sm text-gray-500">
+                            <div className="space-y-1.5 mb-5 text-sm text-[var(--text-secondary)]">
                                 <p>{doctor.email}</p>
                                 <p>{doctor.phone}</p>
                                 {doctor.availability?.length > 0 && (
-                                    <p className="text-emerald-600 font-medium text-xs">
-                                        ✓ {doctor.availability.length} time slot{doctor.availability.length > 1 ? 's' : ''} available
+                                    <p className="text-emerald-600 dark:text-emerald-400 font-medium text-xs flex items-center gap-1">
+                                        <CheckCircle className="w-3 h-3" /> {doctor.availability.length} time slot{doctor.availability.length > 1 ? 's' : ''} available
                                     </p>
                                 )}
                             </div>

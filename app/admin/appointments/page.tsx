@@ -53,7 +53,7 @@ export default function AdminAppointmentsPage() {
             <div className="flex gap-2 mb-6 flex-wrap">
                 {['all', 'pending', 'approved', 'completed', 'rejected', 'cancelled'].map((s) => (
                     <button key={s} onClick={() => setFilter(s)}
-                        className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${filter === s ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>
+                        className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${filter === s ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800' : 'bg-[var(--bg-card)] text-[var(--text-secondary)] border-[var(--border-color)] hover:bg-[var(--bg-body)]'}`}>
                         {s.charAt(0).toUpperCase() + s.slice(1)}
                     </button>
                 ))}
@@ -63,10 +63,10 @@ export default function AdminAppointmentsPage() {
                 <div className="flex items-center justify-center h-40"><div className="spinner" /></div>
             ) : filtered.length === 0 ? (
                 <div className="glass-card p-12 text-center">
-                    <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-16 h-16 mx-auto mb-4 text-[var(--text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <p className="text-gray-400">No appointments found</p>
+                    <p className="text-[var(--text-muted)]">No appointments found</p>
                 </div>
             ) : (
                 <div className="glass-card overflow-hidden">
@@ -86,15 +86,15 @@ export default function AdminAppointmentsPage() {
                                 {filtered.map((apt) => (
                                     <tr key={apt._id}>
                                         <td>
-                                            <p className="font-medium text-gray-900">{apt.patientId.name}</p>
-                                            <p className="text-sm text-gray-500">{apt.patientId.email}</p>
+                                            <p className="font-medium text-[var(--text-primary)]">{apt.patientId.name}</p>
+                                            <p className="text-sm text-[var(--text-secondary)]">{apt.patientId.email}</p>
                                         </td>
                                         <td>
-                                            <p className="font-medium text-gray-900">{apt.doctorId.name}</p>
-                                            <p className="text-sm text-gray-500">{apt.doctorId.specialization}</p>
+                                            <p className="font-medium text-[var(--text-primary)]">{apt.doctorId.name}</p>
+                                            <p className="text-sm text-[var(--text-secondary)]">{apt.doctorId.specialization}</p>
                                         </td>
-                                        <td className="text-gray-700">{formatDate(apt.date)}</td>
-                                        <td className="text-gray-700">{apt.time}</td>
+                                        <td className="text-[var(--text-secondary)]">{formatDate(apt.date)}</td>
+                                        <td className="text-[var(--text-secondary)]">{apt.time}</td>
                                         <td><span className={`badge badge-${apt.status}`}>{apt.status}</span></td>
                                         <td>
                                             {!['cancelled', 'completed', 'rejected'].includes(apt.status) && (

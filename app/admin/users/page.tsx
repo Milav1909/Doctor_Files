@@ -50,10 +50,10 @@ export default function AdminUsersPage() {
 
     const roleBadgeClass = (role: string) => {
         switch (role) {
-            case 'patient': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
-            case 'doctor': return 'bg-blue-50 text-blue-700 border-blue-200';
-            case 'admin': return 'bg-violet-50 text-violet-700 border-violet-200';
-            default: return 'bg-gray-100 text-gray-600 border-gray-200';
+            case 'patient': return 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800';
+            case 'doctor': return 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800';
+            case 'admin': return 'bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-400 border-violet-200 dark:border-violet-800';
+            default: return 'bg-[var(--bg-body)] text-[var(--text-secondary)] border-[var(--border-color)]';
         }
     };
 
@@ -70,7 +70,7 @@ export default function AdminUsersPage() {
                 <div className="flex gap-2 flex-wrap">
                     {['all', 'patient', 'doctor', 'admin'].map((r) => (
                         <button key={r} onClick={() => setFilter(r)}
-                            className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${filter === r ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-white text-gray-500 border-gray-200 hover:bg-gray-50'}`}>
+                            className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${filter === r ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800' : 'bg-[var(--bg-card)] text-[var(--text-secondary)] border-[var(--border-color)] hover:bg-[var(--bg-body)]'}`}>
                             {r.charAt(0).toUpperCase() + r.slice(1)}
                         </button>
                     ))}
@@ -81,7 +81,7 @@ export default function AdminUsersPage() {
                 <div className="flex items-center justify-center h-40"><div className="spinner" /></div>
             ) : filtered.length === 0 ? (
                 <div className="glass-card p-12 text-center">
-                    <p className="text-gray-400">No users found</p>
+                    <p className="text-[var(--text-muted)]">No users found</p>
                 </div>
             ) : (
                 <div className="glass-card overflow-hidden">
@@ -99,14 +99,14 @@ export default function AdminUsersPage() {
                             <tbody>
                                 {filtered.map((user) => (
                                     <tr key={user._id}>
-                                        <td className="font-medium text-gray-900">{user.name}</td>
-                                        <td className="text-gray-500">{user.email}</td>
+                                        <td className="font-medium text-[var(--text-primary)]">{user.name}</td>
+                                        <td className="text-[var(--text-secondary)]">{user.email}</td>
                                         <td>
                                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border capitalize ${roleBadgeClass(user.role)}`}>
                                                 {user.role}
                                             </span>
                                         </td>
-                                        <td className="text-gray-500">{formatDate(user.createdAt)}</td>
+                                        <td className="text-[var(--text-secondary)]">{formatDate(user.createdAt)}</td>
                                         <td>
                                             {user.role === 'patient' && (
                                                 <button onClick={() => handleDelete(user._id)} className="btn-danger text-xs">Delete</button>
