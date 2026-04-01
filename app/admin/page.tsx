@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Users, Stethoscope, CalendarDays, Clock, UserCog, ClipboardList } from 'lucide-react';
+import { useEffect, useState, useCallback } from 'react';
+import { Users, Stethoscope, CalendarDays, Clock, UserCog, ClipboardList, RefreshCw } from 'lucide-react';
 import { useApi } from '@/hooks/useApi';
 
 interface Stats {
@@ -14,25 +14,53 @@ interface Stats {
 }
 
 export default function AdminDashboard() {
-    const { fetchWithAuth } = useApi();
+    const { fetchWithAuth, isAuthReady } = useApi();
     const [stats, setStats] = useState<Stats | null>(null);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => { loadStats(); }, []);
-
-    const loadStats = async () => {
+    const loadStats = useCallback(async (isRefresh = false) => {
+        if (!isAuthReady) return;
+        if (isRefresh) setRefreshing(true);
+        setError(null);
         try {
             const data = await fetchWithAuth('/api/admin/stats');
-            setStats(data);
-        } catch (error) {
-            console.error('Error loading stats:', error);
+            // API returns { stats: { ... }, recentActivity: [...] }
+            setStats({
+                totalPatients: data.stats.totalPatients,
+                totalDoctors: data.stats.totalDoctors,
+                totalAppointments: data.stats.totalAppointments,
+                pendingAppointments: data.stats.pendingAppointments,
+                completedAppointments: data.stats.completedAppointments,
+                recentActivity: data.recentActivity || []
+            });
+        } catch (err) {
+            console.error('Error loading stats:', err);
+            setError(err instanceof Error ? err.message : 'Failed to load stats');
         } finally {
             setLoading(false);
+            setRefreshing(false);
         }
-    };
+    }, [isAuthReady, fetchWithAuth]);
 
-    if (loading) {
+    useEffect(() => {
+        if (isAuthReady) loadStats();
+    }, [isAuthReady, loadStats]);
+
+    if (loading || !isAuthReady) {
         return <div className="flex items-center justify-center h-64"><div className="spinner" /></div>;
+    }
+
+    if (error && !stats) {
+        return (
+            <div className="flex flex-col items-center justify-center h-64 gap-4">
+                <p className="text-red-500">{error}</p>
+                <button onClick={() => { setLoading(true); loadStats(); }} className="btn-primary">
+                    Retry
+                </button>
+            </div>
+        );
     }
 
     const statCards = [
@@ -44,9 +72,20 @@ export default function AdminDashboard() {
 
     return (
         <div className="animate-fadeIn">
-            <div className="mb-8">
-                <h1 className="page-header">Admin Dashboard</h1>
-                <p className="page-subtitle">System overview and management</p>
+            <div className="mb-8 flex items-center justify-between">
+                <div>
+                    <h1 className="page-header">Admin Dashboard</h1>
+                    <p className="page-subtitle">System overview and management</p>
+                </div>
+                <button
+                    onClick={() => loadStats(true)}
+                    disabled={refreshing}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border border-[var(--border-color)] bg-[var(--bg-card)] text-[var(--text-secondary)] hover:text-[var(--primary)] hover:border-[var(--primary)] transition-all duration-200 disabled:opacity-50"
+                    title="Refresh data"
+                >
+                    <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                    {refreshing ? 'Refreshing...' : 'Refresh'}
+                </button>
             </div>
 
             {/* Stats */}

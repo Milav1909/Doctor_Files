@@ -1,19 +1,32 @@
 'use client';
 
+import { useRef, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
 export function useApi() {
-    const { token } = useAuth();
+    const { token, isLoading } = useAuth();
+    // Use a ref so that fetchWithAuth has a stable identity across renders
+    const tokenRef = useRef(token);
+    tokenRef.current = token;
 
-    const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
+    const isLoadingRef = useRef(isLoading);
+    isLoadingRef.current = isLoading;
+
+    const fetchWithAuth = useCallback(async (url: string, options: RequestInit = {}) => {
+        if (isLoadingRef.current) {
+            throw new Error('Auth not ready');
+        }
+
+        if (!tokenRef.current) {
+            throw new Error('Not authenticated');
+        }
+
         const headers: HeadersInit = {
             'Content-Type': 'application/json',
             ...options.headers
         };
 
-        if (token) {
-            (headers as Record<string, string>)['Authorization'] = `Bearer ${token}`;
-        }
+        (headers as Record<string, string>)['Authorization'] = `Bearer ${tokenRef.current}`;
 
         const response = await fetch(url, {
             ...options,
@@ -27,7 +40,7 @@ export function useApi() {
         }
 
         return data;
-    };
+    }, []);
 
-    return { fetchWithAuth };
+    return { fetchWithAuth, isAuthReady: !isLoading && !!token };
 }
