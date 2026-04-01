@@ -34,8 +34,8 @@ async function createAdmin() {
     // ========================================
     const adminData = {
         name: 'System Admin',
-        email: 'admin@doctorfiles.com',
-        password: 'password123'  // Plain text password (will be hashed)
+        email: 'admin2@doctorfiles.com',
+        password: 'admin2@df.com'  // Plain text password (will be hashed)
     };
     // ========================================
 
